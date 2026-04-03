@@ -1,0 +1,2594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>林默 — 产品策略师</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f5f5f3;
+      --bg-elevated: #f0f0ed;
+      --surface: #eaeae6;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b6b6b;
+      --text-muted: #9a9a9a;
+      --accent: #1a3a5c;
+      --accent-light: #2a5a8c;
+      --accent-dim: rgba(26, 58, 92, 0.06);
+      --accent-dim-hover: rgba(26, 58, 92, 0.1);
+      --border: #d8d6d0;
+      --border-light: #e8e6e0;
+      --font-display: 'IBM Plex Sans', 'Noto Sans SC', sans-serif;
+      --font-serif: 'Noto Serif SC', serif;
+      --font-body: 'Noto Sans SC', 'IBM Plex Sans', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Bamboo dappled light video */
+    #bamboo-video {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 154vh;
+      height: 154vw;
+      object-fit: cover;
+      pointer-events: none;
+      z-index: 999;
+      mix-blend-mode: multiply;
+      opacity: 0.3;
+      transform: translate(-50%, -50%) scaleX(-1) rotate(270deg) scale(0.65);
+      filter: grayscale(1);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: inherit;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(247, 246, 242, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .nav.scrolled {
+      border-bottom-color: var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      position: relative;
+      padding: 6px 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      transition: color 0.3s;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.4s var(--ease-out-expo);
+    }
+
+    .nav-link:hover::after,
+    .nav-link:focus-visible::after {
+      width: 100%;
+    }
+
+    .nav-link:active {
+      opacity: 0.6;
+    }
+
+    .nav-menu-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-menu-trigger svg {
+      transition: transform 0.4s var(--ease-out-expo);
+    }
+
+    .nav-menu-trigger.active svg {
+      transform: rotate(90deg);
+    }
+
+    /* Full-screen menu overlay */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: var(--bg);
+      transform: translateY(-100%);
+      transition: transform 0.8s var(--ease-out-expo);
+      overflow-y: auto;
+    }
+
+    .menu-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+
+    .menu-overlay.open {
+      transform: translateY(0);
+    }
+
+    .menu-inner {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 120px 48px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+
+    .menu-left {
+      position: sticky;
+      top: 120px;
+      align-self: start;
+    }
+
+    .menu-title {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 80px);
+      line-height: 1.05;
+      margin-bottom: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .menu-subtitle {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .menu-right {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .menu-category {
+      border-top: 1px solid var(--border);
+    }
+
+    .menu-category:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .menu-category-header {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .menu-category-header:hover {
+      opacity: 0.7;
+    }
+
+    .menu-category-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .menu-category-chevron {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-left: 10px;
+      transition: transform 0.3s var(--ease-out-expo);
+      vertical-align: middle;
+    }
+
+    .menu-category.expanded .menu-category-chevron {
+      transform: rotate(180deg);
+    }
+
+    .menu-category-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .menu-category-items {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s var(--ease-out-expo);
+    }
+
+    .menu-category.expanded .menu-category-items {
+      max-height: 600px;
+    }
+
+    .menu-category-item {
+      padding: 18px 0 18px 24px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .menu-category-item:hover {
+      opacity: 1;
+      background: var(--accent-dim);
+      padding-left: 32px;
+    }
+
+    .menu-category-item:active {
+      background: var(--accent-dim-hover);
+    }
+
+    .menu-item-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .menu-item-type {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .menu-category-item .menu-item-arrow {
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: all 0.3s var(--ease-out-expo);
+      color: var(--accent);
+      font-size: 14px;
+    }
+
+    .menu-category-item:hover .menu-item-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Page: Home */
+    .page {
+      display: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 48px;
+      position: relative;
+    }
+
+    .hero-accent-line {
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+      margin-bottom: 32px;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5.5vw, 64px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      max-width: 680px;
+      font-weight: 700;
+    }
+
+    .hero-subtitle {
+      margin-top: 32px;
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      max-width: 520px;
+    }
+
+    .hero-methodology {
+      margin-top: 72px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .hero-methodology-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-methodology-steps {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .methodology-step {
+      flex: 1;
+      padding: 24px 24px 24px 0;
+      border-left: 1px solid var(--border);
+      position: relative;
+    }
+
+    .methodology-step:first-child {
+      border-left: none;
+      padding-left: 0;
+    }
+
+    .methodology-step-number {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .methodology-step-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .methodology-step-desc {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* Section divider */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 0 48px;
+      margin: 0;
+    }
+
+    .section-divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-divider-mark {
+      width: 8px;
+      height: 8px;
+      border: 1px solid var(--accent);
+      transform: rotate(45deg);
+    }
+
+    /* Work list section */
+    .work-section {
+      padding: 120px 48px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 72px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 3.5vw, 36px);
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .section-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+
+    .work-card {
+      position: relative;
+      cursor: pointer;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      transition: all 0.4s var(--ease-out-expo);
+      overflow: hidden;
+    }
+
+    .work-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--accent);
+      transition: height 0.4s var(--ease-out-expo);
+    }
+
+    .work-card:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .work-card:hover::before {
+      height: 100%;
+    }
+
+    .work-card:active {
+      transform: scale(0.99);
+    }
+
+    .work-card-number {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 28px;
+      font-weight: 500;
+    }
+
+    .work-card-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 28px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .work-card-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .work-card-field {
+      display: flex;
+      gap: 16px;
+      align-items: baseline;
+    }
+
+    .work-card-field-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      min-width: 40px;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    .work-card-field-value {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .work-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .work-card-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    .work-card:hover .work-card-tag {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Quote block */
+    .quote-block {
+      padding: 80px 48px;
+      margin: 0;
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .quote-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .quote-mark {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .quote-text {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 3vw, 28px);
+      line-height: 1.6;
+      color: var(--text-primary);
+      font-weight: 400;
+    }
+
+    .quote-attr {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      margin-top: 24px;
+      text-transform: uppercase;
+    }
+
+    /* Work detail page */
+    .work-detail {
+      padding-top: 72px;
+    }
+
+    .work-detail-header {
+      padding: 80px 48px 64px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 64px;
+    }
+
+    .work-detail-number {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .work-detail-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4.5vw, 52px);
+      line-height: 1.15;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .work-detail-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .work-detail-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding-top: 8px;
+    }
+
+    .meta-item-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .meta-item-value {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    .work-detail-content {
+      padding: 64px 48px 120px;
+    }
+
+    .work-detail-content-section {
+      margin-bottom: 56px;
+    }
+
+    .work-detail-content-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .work-detail-content-section h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      letter-spacing: -0.01em;
+    }
+
+    .work-detail-content-section p {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin-bottom: 16px;
+    }
+
+    .work-detail-content-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .work-nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .work-nav-link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s var(--ease-out-expo);
+      padding: 14px 24px;
+      border: 1px solid var(--border);
+      border-radius: 1px;
+      font-weight: 500;
+    }
+
+    .work-nav-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .work-nav-link:active {
+      transform: scale(0.97);
+    }
+
+    /* Methodology page */
+    .methodology {
+      padding-top: 160px;
+      min-height: 100vh;
+    }
+
+    .methodology-inner {
+      padding: 0 48px 120px;
+      max-width: 1080px;
+    }
+
+    .methodology-accent-line {
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+      margin-bottom: 32px;
+    }
+
+    .methodology-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5.5vw, 64px);
+      line-height: 1.1;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .methodology-subtitle {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 560px;
+      margin-bottom: 80px;
+    }
+
+    .methodology-framework {
+      margin-bottom: 96px;
+    }
+
+    .methodology-framework-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .methodology-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .methodology-step-card {
+      padding: 36px 28px;
+      border: 1px solid var(--border);
+      position: relative;
+      background: var(--bg);
+      transition: all 0.4s var(--ease-out-expo);
+    }
+
+    .methodology-step-card:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .methodology-step-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--ease-out-expo);
+    }
+
+    .methodology-step-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .methodology-step-card-number {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .methodology-step-card-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .methodology-step-card-items {
+      list-style: none;
+      padding: 0;
+    }
+
+    .methodology-step-card-items li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .methodology-step-card-items li:last-child {
+      border-bottom: none;
+    }
+
+    .methodology-principles {
+      margin-bottom: 96px;
+    }
+
+    .methodology-principles-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .methodology-principle {
+      padding: 36px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .methodology-principle:first-of-type {
+      border-top: 1px solid var(--border-light);
+    }
+
+    .methodology-principle-number {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .methodology-principle-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .methodology-principle-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 600px;
+    }
+
+    /* About page */
+    .about {
+      padding-top: 160px;
+      min-height: 100vh;
+    }
+
+    .about-grid {
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 96px;
+      align-items: start;
+    }
+
+    .about-portrait {
+      position: sticky;
+      top: 160px;
+    }
+
+    .about-portrait-image {
+      aspect-ratio: 3 / 4;
+      background: var(--surface);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+    }
+
+    .about-portrait-placeholder {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .about-portrait-caption {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+    }
+
+    .about-content {
+      padding-bottom: 120px;
+    }
+
+    .about-accent-line {
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .about-name {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.1;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .about-role {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    .about-bio {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 64px;
+      max-width: 520px;
+    }
+
+    .about-section {
+      margin-bottom: 64px;
+    }
+
+    .about-section-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .about-section p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .about-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .about-skill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 1px;
+      transition: all 0.3s var(--ease-out-expo);
+      user-select: none;
+      letter-spacing: 0.03em;
+    }
+
+    .about-skill:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .about-skill:active {
+      transform: scale(0.96);
+    }
+
+    .about-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .about-contact a {
+      font-size: 15px;
+      color: var(--text-secondary);
+      transition: color 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .about-contact a:hover {
+      color: var(--accent);
+    }
+
+    /* Footer */
+    .footer {
+      padding: 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-link {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      transition: color 0.3s;
+    }
+
+    .footer-link:hover {
+      color: var(--text-primary);
+    }
+
+    /* Page transition */
+    .page-transition {
+      position: fixed;
+      inset: 0;
+      background: var(--text-primary);
+      z-index: 200;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      pointer-events: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .menu-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .menu-left {
+        position: static;
+      }
+
+      .work-detail-header {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 64px;
+      }
+
+      .about-portrait {
+        position: static;
+        max-width: 360px;
+      }
+
+      .methodology-steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-methodology-steps {
+        flex-wrap: wrap;
+      }
+
+      .methodology-step {
+        flex: 1 1 calc(50% - 1px);
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding: 24px 0;
+      }
+
+      .methodology-step:first-child {
+        border-top: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        padding: 16px 24px;
+      }
+
+      .nav-links {
+        gap: 20px;
+      }
+
+      .hero {
+        padding: 0 24px;
+        min-height: 90vh;
+      }
+
+      .hero-accent-line {
+        margin-bottom: 24px;
+      }
+
+      .work-section {
+        padding: 80px 24px;
+      }
+
+      .work-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .work-card {
+        padding: 36px 28px;
+      }
+
+      .work-detail-header {
+        padding: 48px 24px;
+      }
+
+      .work-detail-content {
+        padding: 48px 24px 80px;
+      }
+
+      .about {
+        padding-top: 120px;
+      }
+
+      .about-grid {
+        padding: 0 24px;
+      }
+
+      .menu-inner {
+        padding: 100px 24px 60px;
+      }
+
+      .methodology {
+        padding-top: 120px;
+      }
+
+      .methodology-inner {
+        padding: 0 24px 80px;
+      }
+
+      .methodology-steps-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quote-block {
+        padding: 64px 24px;
+      }
+
+      .section-divider {
+        padding: 0 24px;
+      }
+
+      .footer {
+        padding: 36px 24px;
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* Animation classes */
+    .reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Audio toggle button */
+    .audio-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: rgba(245, 245, 243, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.3s var(--ease-out-expo);
+      color: var(--text-muted);
+    }
+
+    .audio-toggle:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .audio-toggle.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .audio-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .audio-toggle .icon-mute { display: block; }
+    .audio-toggle .icon-sound { display: none; }
+    .audio-toggle.active .icon-mute { display: none; }
+    .audio-toggle.active .icon-sound { display: block; }
+
+    /* Audio mode selector */
+    .audio-mode-label {
+      position: fixed;
+      bottom: 72px;
+      right: 24px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all 0.3s var(--ease-out-expo);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .audio-mode-label.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <video id="bamboo-video" autoplay muted loop playsinline aria-hidden="true">
+    <source src="leave-video.mp4" type="video/mp4">
+  </video>
+
+  <!-- Ambient wind audio -->
+  <audio id="wind-audio-1" loop preload="auto">
+    <source src="morning.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="wind-audio-2" loop preload="auto">
+    <source src="burning-air.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Page transition overlay -->
+  <div class="page-transition" id="pageTransition"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="mainNav">
+    <a href="#" class="nav-logo" data-page="home">林默</a>
+    <div class="nav-links">
+      <button class="nav-link nav-menu-trigger" id="menuTrigger">
+        案例
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+          <line x1="1" y1="4" x2="13" y2="4"/>
+          <line x1="1" y1="7" x2="13" y2="7"/>
+          <line x1="1" y1="10" x2="9" y2="10"/>
+        </svg>
+      </button>
+      <button class="nav-link" data-page="methodology">方法论</button>
+      <button class="nav-link" data-page="about">关于</button>
+    </div>
+  </nav>
+
+  <!-- Full-screen menu overlay -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-inner">
+      <div class="menu-left">
+        <h2 class="menu-title">全部<br>案例</h2>
+        <p class="menu-subtitle">选择分类浏览项目</p>
+      </div>
+      <div class="menu-right">
+        <div class="menu-category" data-category="b-company">
+          <div class="menu-category-header">
+            <span class="menu-category-name">B端 · 公司 <span class="menu-category-chevron">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </span></span>
+            <span class="menu-category-count">4 项目</span>
+          </div>
+          <div class="menu-category-items">
+            <a href="#" class="menu-category-item" data-work="crm-system">
+              <div>
+                <div class="menu-item-title">CRM 客户管理系统</div>
+                <div class="menu-item-type">SaaS · 2024</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="supply-chain">
+              <div>
+                <div class="menu-item-title">供应链协同平台</div>
+                <div class="menu-item-type">企业级 · 2024</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="data-dashboard">
+              <div>
+                <div class="menu-item-title">数据可视化大屏</div>
+                <div class="menu-item-type">数据分析 · 2023</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="hr-system">
+              <div>
+                <div class="menu-item-title">HR 人力资源系统</div>
+                <div class="menu-item-type">内部管理 · 2023</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="menu-category" data-category="c-company">
+          <div class="menu-category-header">
+            <span class="menu-category-name">C端 · 公司 <span class="menu-category-chevron">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </span></span>
+            <span class="menu-category-count">3 项目</span>
+          </div>
+          <div class="menu-category-items">
+            <a href="#" class="menu-category-item" data-work="health-app">
+              <div>
+                <div class="menu-item-title">健康管理 App</div>
+                <div class="menu-item-type">移动端 · 2024</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="e-commerce">
+              <div>
+                <div class="menu-item-title">电商平台 redesign</div>
+                <div class="menu-item-type">Web · 2023</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="social-mini">
+              <div>
+                <div class="menu-item-title">社交小程序</div>
+                <div class="menu-item-type">小程序 · 2023</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="menu-category" data-category="docs">
+          <div class="menu-category-header">
+            <span class="menu-category-name">文档 <span class="menu-category-chevron">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </span></span>
+            <span class="menu-category-count">2 项目</span>
+          </div>
+          <div class="menu-category-items">
+            <a href="#" class="menu-category-item" data-work="design-system">
+              <div>
+                <div class="menu-item-title">设计系统文档</div>
+                <div class="menu-item-type">Design System · 2024</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="ux-guidelines">
+              <div>
+                <div class="menu-item-title">UX 规范指南</div>
+                <div class="menu-item-type">规范 · 2023</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="menu-category" data-category="explore">
+          <div class="menu-category-header">
+            <span class="menu-category-name">探索 <span class="menu-category-chevron">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </span></span>
+            <span class="menu-category-count">3 项目</span>
+          </div>
+          <div class="menu-category-items">
+            <a href="#" class="menu-category-item" data-work="ai-interface">
+              <div>
+                <div class="menu-item-title">AI 界面探索</div>
+                <div class="menu-item-type">概念设计 · 2024</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="spatial-computing">
+              <div>
+                <div class="menu-item-title">空间计算交互</div>
+                <div class="menu-item-type">XR · 2024</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+            <a href="#" class="menu-category-item" data-work="motion-study">
+              <div>
+                <div class="menu-item-title">动效语言研究</div>
+                <div class="menu-item-type">Motion · 2023</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page: Home -->
+  <main class="page active" id="page-home">
+    <section class="hero">
+      <div class="hero-accent-line reveal"></div>
+      <p class="hero-label reveal">产品策略师 · 设计管理者</p>
+      <h1 class="hero-title reveal">
+        在模糊需求中理清方向，<br>在约束条件下找到最优解。
+      </h1>
+      <p class="hero-subtitle reveal">
+        专注于复杂业务场景的产品规划与策略设计。擅长从混乱的业务逻辑中提炼清晰的产品方向，通过系统性的思考和结构化的方法推动落地。
+      </p>
+      <div class="hero-methodology reveal">
+        <p class="hero-methodology-label">工作方法论</p>
+        <div class="hero-methodology-steps">
+          <div class="methodology-step">
+            <div class="methodology-step-number">01</div>
+            <div class="methodology-step-name">洞察</div>
+            <div class="methodology-step-desc">理解业务</div>
+          </div>
+          <div class="methodology-step">
+            <div class="methodology-step-number">02</div>
+            <div class="methodology-step-name">定义</div>
+            <div class="methodology-step-desc">框定问题</div>
+          </div>
+          <div class="methodology-step">
+            <div class="methodology-step-number">03</div>
+            <div class="methodology-step-name">规划</div>
+            <div class="methodology-step-desc">制定方案</div>
+          </div>
+          <div class="methodology-step">
+            <div class="methodology-step-number">04</div>
+            <div class="methodology-step-name">推动</div>
+            <div class="methodology-step-desc">推动落地</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-mark"></div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <section class="work-section">
+      <div class="section-header reveal">
+        <h2 class="section-title">案例</h2>
+        <span class="section-count">01 — 12</span>
+      </div>
+      <div class="work-grid">
+        <div class="work-card" data-work="crm-system">
+          <div class="work-card-number">01</div>
+          <h3 class="work-card-title">CRM 客户管理系统</h3>
+          <div class="work-card-fields">
+            <div class="work-card-field">
+              <span class="work-card-field-label">问题</span>
+              <span class="work-card-field-value">销售流程混乱，信息孤岛严重，团队协作效率低</span>
+            </div>
+            <div class="work-card-field">
+              <span class="work-card-field-label">策略</span>
+              <span class="work-card-field-value">场景驱动重构，高频操作前置，统一客户视图</span>
+            </div>
+          </div>
+          <div class="work-card-tags">
+            <span class="work-card-tag">B端</span>
+            <span class="work-card-tag">SaaS</span>
+            <span class="work-card-tag">从 0 到 1</span>
+          </div>
+        </div>
+        <div class="work-card" data-work="supply-chain">
+          <div class="work-card-number">02</div>
+          <h3 class="work-card-title">供应链协同平台</h3>
+          <div class="work-card-fields">
+            <div class="work-card-field">
+              <span class="work-card-field-label">问题</span>
+              <span class="work-card-field-value">多方协作链路断裂，订单状态不透明，异常处理滞后</span>
+            </div>
+            <div class="work-card-field">
+              <span class="work-card-field-label">策略</span>
+              <span class="work-card-field-value">建立统一状态模型，角色定制工作台，全链路可视化</span>
+            </div>
+          </div>
+          <div class="work-card-tags">
+            <span class="work-card-tag">B端</span>
+            <span class="work-card-tag">企业级</span>
+            <span class="work-card-tag">多端协同</span>
+          </div>
+        </div>
+        <div class="work-card" data-work="health-app">
+          <div class="work-card-number">03</div>
+          <h3 class="work-card-title">健康管理 App</h3>
+          <div class="work-card-fields">
+            <div class="work-card-field">
+              <span class="work-card-field-label">问题</span>
+              <span class="work-card-field-value">健康数据碎片化，用户缺乏系统性洞察和持续使用动力</span>
+            </div>
+            <div class="work-card-field">
+              <span class="work-card-field-label">策略</span>
+              <span class="work-card-field-value">健康分数体系简化认知，个性化建议驱动持续使用</span>
+            </div>
+          </div>
+          <div class="work-card-tags">
+            <span class="work-card-tag">C端</span>
+            <span class="work-card-tag">移动端</span>
+            <span class="work-card-tag">数据可视化</span>
+          </div>
+        </div>
+        <div class="work-card" data-work="design-system">
+          <div class="work-card-number">04</div>
+          <h3 class="work-card-title">设计系统文档</h3>
+          <div class="work-card-fields">
+            <div class="work-card-field">
+              <span class="work-card-field-label">问题</span>
+              <span class="work-card-field-value">多条产品线设计不一致，开发重复造轮子，协作效率低</span>
+            </div>
+            <div class="work-card-field">
+              <span class="work-card-field-label">策略</span>
+              <span class="work-card-field-value">核心-扩展双层架构，配套完整原则与指南，定期评审</span>
+            </div>
+          </div>
+          <div class="work-card-tags">
+            <span class="work-card-tag">文档</span>
+            <span class="work-card-tag">Design System</span>
+            <span class="work-card-tag">跨团队</span>
+          </div>
+        </div>
+        <div class="work-card" data-work="ai-interface">
+          <div class="work-card-number">05</div>
+          <h3 class="work-card-title">AI 界面探索</h3>
+          <div class="work-card-fields">
+            <div class="work-card-field">
+              <span class="work-card-field-label">问题</span>
+              <span class="work-card-field-value">大模型时代，传统 GUI 是否仍然适用？如何建立信任？</span>
+            </div>
+            <div class="work-card-field">
+              <span class="work-card-field-label">策略</span>
+              <span class="work-card-field-value">意图驱动界面，展现 AI 思考过程，多模态协同交互</span>
+            </div>
+          </div>
+          <div class="work-card-tags">
+            <span class="work-card-tag">探索</span>
+            <span class="work-card-tag">概念设计</span>
+            <span class="work-card-tag">AI</span>
+          </div>
+        </div>
+        <div class="work-card" data-work="data-dashboard">
+          <div class="work-card-number">06</div>
+          <h3 class="work-card-title">数据可视化大屏</h3>
+          <div class="work-card-fields">
+            <div class="work-card-field">
+              <span class="work-card-field-label">问题</span>
+              <span class="work-card-field-value">数据分散在多个系统，管理层缺乏统一的业务视图</span>
+            </div>
+            <div class="work-card-field">
+              <span class="work-card-field-label">策略</span>
+              <span class="work-card-field-value">总-分信息架构，色彩编码区分业务线，支持下钻分析</span>
+            </div>
+          </div>
+          <div class="work-card-tags">
+            <span class="work-card-tag">B端</span>
+            <span class="work-card-tag">数据分析</span>
+            <span class="work-card-tag">决策支持</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="quote-block">
+      <div class="quote-inner reveal">
+        <div class="quote-mark">"</div>
+        <p class="quote-text">好的设计不是无法再添加，而是无法再删减。每一个元素都应该有存在的理由。</p>
+        <p class="quote-attr">林默 · 设计原则</p>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span class="footer-copy">© 2024 林默</span>
+      <div class="footer-links">
+        <a href="#" class="footer-link">LinkedIn</a>
+        <a href="#" class="footer-link">Email</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Page: Methodology -->
+  <main class="page" id="page-methodology">
+    <section class="methodology">
+      <div class="methodology-inner">
+        <div class="methodology-accent-line reveal"></div>
+        <h1 class="methodology-title reveal">工作方法论</h1>
+        <p class="methodology-subtitle reveal">
+          设计不是产出物，而是一种思考方式。我的方法论核心是：在动手之前，先想清楚问题是什么。
+        </p>
+
+        <div class="methodology-framework">
+          <h2 class="methodology-framework-title">四步框架</h2>
+          <div class="methodology-steps-grid">
+            <div class="methodology-step-card">
+              <div class="methodology-step-card-number">01</div>
+              <h3 class="methodology-step-card-title">洞察</h3>
+              <ul class="methodology-step-card-items">
+                <li>理解业务模式与商业模式</li>
+                <li>用户研究与行为分析</li>
+                <li>竞品分析与行业趋势</li>
+                <li>利益相关方映射</li>
+              </ul>
+            </div>
+            <div class="methodology-step-card">
+              <div class="methodology-step-card-number">02</div>
+              <h3 class="methodology-step-card-title">定义</h3>
+              <ul class="methodology-step-card-items">
+                <li>问题框定与重构</li>
+                <li>需求优先级排序</li>
+                <li>场景梳理与用户旅程</li>
+                <li>约束条件识别</li>
+              </ul>
+            </div>
+            <div class="methodology-step-card">
+              <div class="methodology-step-card-number">03</div>
+              <h3 class="methodology-step-card-title">规划</h3>
+              <ul class="methodology-step-card-items">
+                <li>信息架构设计</li>
+                <li>产品路线图制定</li>
+                <li>方案方向探索与验证</li>
+                <li>设计决策框架建立</li>
+              </ul>
+            </div>
+            <div class="methodology-step-card">
+              <div class="methodology-step-card-number">04</div>
+              <h3 class="methodology-step-card-title">推动</h3>
+              <ul class="methodology-step-card-items">
+                <li>跨团队协作与沟通</li>
+                <li>迭代策略与节奏把控</li>
+                <li>设计质量管理</li>
+                <li>持续验证与调整</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="methodology-principles">
+          <h2 class="methodology-principles-title">设计原则</h2>
+          <div class="methodology-principle">
+            <div class="methodology-principle-number">01</div>
+            <h3 class="methodology-principle-title">先理解，再解决</h3>
+            <p class="methodology-principle-desc">
+              大多数设计失败不是因为解决方案不好，而是因为问题定义错了。花足够的时间理解业务背景、用户真实需求和约束条件，比急于产出方案重要得多。
+            </p>
+          </div>
+          <div class="methodology-principle">
+            <div class="methodology-principle-number">02</div>
+            <h3 class="methodology-principle-title">结构优于细节</h3>
+            <p class="methodology-principle-desc">
+              信息架构和交互框架的正确性，远比视觉细节重要。先把骨架搭对，再谈皮相。好的结构让细节自然成立，坏的结构再精致的细节也救不回来。
+            </p>
+          </div>
+          <div class="methodology-principle">
+            <div class="methodology-principle-number">03</div>
+            <h3 class="methodology-principle-title">克制是美德</h3>
+            <p class="methodology-principle-desc">
+              好的设计不是无法再添加，而是无法再删减。每一个元素都应该有存在的理由。克制不是少做，而是只做对的。
+            </p>
+          </div>
+          <div class="methodology-principle">
+            <div class="methodology-principle-number">04</div>
+            <h3 class="methodology-principle-title">设计是团队的事</h3>
+            <p class="methodology-principle-desc">
+              设计师的价值不在于自己做得多好，而在于如何让整个团队做出更好的决策。建立共识、推动协作、管理质量，这些比画界面重要得多。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="footer-copy">© 2024 林默</span>
+      <div class="footer-links">
+        <a href="#" class="footer-link">LinkedIn</a>
+        <a href="#" class="footer-link">Email</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Page: Work Detail -->
+  <main class="page" id="page-work-detail">
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <div>
+          <div class="work-detail-number" id="workDetailNumber">01</div>
+          <h1 class="work-detail-title" id="workDetailTitle">项目名称</h1>
+          <p class="work-detail-desc" id="workDetailDesc">项目描述</p>
+        </div>
+        <div class="work-detail-meta">
+          <div>
+            <div class="meta-item-label">类别</div>
+            <div class="meta-item-value" id="workDetailCategory">B端 · 公司</div>
+          </div>
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value" id="workDetailYear">2024</div>
+          </div>
+          <div>
+            <div class="meta-item-label">角色</div>
+            <div class="meta-item-value" id="workDetailRole">产品设计</div>
+          </div>
+          <div>
+            <div class="meta-item-label">工具</div>
+            <div class="meta-item-value" id="workDetailTools">Figma</div>
+          </div>
+        </div>
+      </div>
+      <div class="work-detail-content" id="workDetailContent">
+        <div class="work-detail-content-section">
+          <h3>项目背景</h3>
+          <p>详细内容...</p>
+        </div>
+      </div>
+      <div class="work-nav">
+        <a href="#" class="work-nav-link" id="workPrev">← 上一个</a>
+        <a href="#" class="work-nav-link" id="workNext">下一个 →</a>
+      </div>
+      <footer class="footer">
+        <span class="footer-copy">© 2024 林默</span>
+        <div class="footer-links">
+          <a href="#" class="footer-link">LinkedIn</a>
+          <a href="#" class="footer-link">Email</a>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Page: About -->
+  <main class="page" id="page-about">
+    <section class="about">
+      <div class="about-grid">
+        <div class="about-portrait reveal">
+          <div class="about-portrait-image">
+            <span class="about-portrait-placeholder">肖像</span>
+          </div>
+          <p class="about-portrait-caption">林默 · 2024</p>
+        </div>
+        <div class="about-content">
+          <div class="about-accent-line reveal"></div>
+          <h1 class="about-name reveal">林默</h1>
+          <p class="about-role reveal">产品策略师 · 设计管理者</p>
+          <p class="about-bio reveal">
+            8年互联网产品设计经验，专注于复杂业务场景的产品规划与策略设计。擅长从混乱的业务逻辑中提炼清晰的产品方向，通过系统性的思考和结构化的方法推动落地。相信好的设计源于对问题的深刻理解，而非对方案的快速执行。
+          </p>
+
+          <div class="about-section reveal">
+            <h3 class="about-section-title">经历</h3>
+            <p>
+              <strong>2022 — 至今</strong><br>
+              某头部 SaaS 公司 · 高级产品设计师<br>
+              负责 CRM 产品线设计，主导设计系统搭建，管理 3 人设计小组
+            </p>
+            <p>
+              <strong>2019 — 2022</strong><br>
+              某电商平台 · 产品设计师<br>
+              负责商家后台及供应链产品设计，推动跨团队协作流程优化
+            </p>
+            <p>
+              <strong>2016 — 2019</strong><br>
+              某科技公司 · UI/UX 设计师<br>
+              负责移动端产品设计及用户研究
+            </p>
+          </div>
+
+          <div class="about-section reveal">
+            <h3 class="about-section-title">核心能力</h3>
+            <div class="about-skills">
+              <span class="about-skill">产品规划</span>
+              <span class="about-skill">策略设计</span>
+              <span class="about-skill">信息架构</span>
+              <span class="about-skill">设计管理</span>
+              <span class="about-skill">用户研究</span>
+              <span class="about-skill">需求分析</span>
+              <span class="about-skill">跨团队协作</span>
+              <span class="about-skill">设计系统</span>
+              <span class="about-skill">B端设计</span>
+              <span class="about-skill">SaaS</span>
+            </div>
+          </div>
+
+          <div class="about-section reveal">
+            <h3 class="about-section-title">联系</h3>
+            <div class="about-contact">
+              <a href="mailto:linmo@example.com">linmo@example.com</a>
+              <a href="#">LinkedIn ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="footer-copy">© 2024 林默</span>
+      <div class="footer-links">
+        <a href="#" class="footer-link">LinkedIn</a>
+        <a href="#" class="footer-link">Email</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const works = {
+      'crm-system': {
+        number: '01',
+        title: 'CRM 客户管理系统',
+        desc: '从 0 到 1 构建企业级 CRM 系统，覆盖客户管理、销售漏斗、合同管理等核心模块。重新梳理信息架构和交互流程，让复杂系统变得清晰可用。',
+        category: 'B端 · 公司',
+        year: '2024',
+        role: '产品设计负责人',
+        tools: 'Figma, Principle, FigJam',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>公司原有 CRM 系统已使用 5 年，界面陈旧、操作繁琐，销售团队反馈强烈。新系统需要覆盖客户全生命周期管理，同时保持操作的简洁高效。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>核心矛盾在于：业务方希望功能越多越好，但销售团队需要的是快速完成日常操作。如何在功能密度和操作效率之间找到平衡？</p>
+            <p>我们选择了"场景驱动"的策略——不按功能模块组织界面，而是按销售日常工作场景组织。将高频操作前置，低频功能收纳。通过卡片式设计整合客户信息，减少页面跳转。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>规划与架构</h3>
+            <p>信息架构上，采用"工作台 + 模块"的双层结构。工作台按角色定制，展示当前最重要的信息和待办。模块层保持功能完整性，但通过搜索和快捷入口降低导航成本。</p>
+            <p>关键决策点：是否引入 AI 辅助？我们决定先做好基础体验，AI 作为后续迭代方向。理由是：在基础流程不清晰的情况下引入 AI，只会增加复杂度。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>推动落地</h3>
+            <p>采用分阶段交付策略。第一阶段聚焦核心销售流程，确保 MVP 可用。第二阶段完善管理功能。第三阶段引入高级分析和自动化。</p>
+            <p>跨团队协作方面，建立了设计-开发-产品的三角沟通机制，每周同步进展，及时对齐方向。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：坚持场景驱动的设计思路，没有被功能清单牵着走。早期投入时间做用户调研和场景梳理，为后续设计决策提供了清晰依据。</p>
+            <p>如果重来：会更早引入开发团队参与设计评审，减少后期返工。另外，管理功能的优先级应该更早确定，避免后期压缩开发时间。</p>
+          </div>
+        `
+      },
+      'supply-chain': {
+        number: '02',
+        title: '供应链协同平台',
+        desc: '打通供应商、仓储、物流三方协作链路，实现订单全链路可视化追踪。',
+        category: 'B端 · 公司',
+        year: '2024',
+        role: '产品设计',
+        tools: 'Figma, Miro',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>公司供应链涉及多个外部合作方，信息孤岛严重，订单状态不透明，异常处理效率低下。各方使用不同的系统和流程，协作成本极高。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>多方角色、多端协同、复杂状态流转——核心挑战不是界面设计，而是如何建立统一的状态模型和协作协议。</p>
+            <p>策略上，我们先梳理了完整的订单生命周期，识别出所有关键状态和角色职责。然后为每个角色设计定制化的工作台，突出其需要关注的信息和待办事项。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>规划与架构</h3>
+            <p>建立统一的订单状态模型，设计可视化的链路追踪组件。每个节点展示当前状态、负责人、预计时间和实际进度。异常状态用醒目的方式标注，并提供快速处理入口。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：先建立状态模型再做界面设计，确保了信息架构的准确性。可视化的链路追踪是用户反馈最好的功能。</p>
+            <p>如果重来：会更深入地了解各方的实际工作流程，有些设计假设与实际情况有偏差，导致后期调整。</p>
+          </div>
+        `
+      },
+      'data-dashboard': {
+        number: '03',
+        title: '数据可视化大屏',
+        desc: '为管理层打造的实时业务监控决策中心，整合 8 条业务线核心指标。',
+        category: 'B端 · 公司',
+        year: '2023',
+        role: '视觉设计 & 交互设计',
+        tools: 'Figma, ECharts',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>管理层需要实时了解公司各业务线运营状况，但数据分散在多个系统中，缺乏统一的视图。决策依赖人工汇总，时效性和准确性都无法保证。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>核心问题不是"展示什么数据"，而是"管理层需要基于数据做什么决策"。我们花了大量时间与管理层沟通，了解他们的决策场景和信息需求。</p>
+            <p>策略上采用"总-分"信息架构：顶层展示核心 KPI，支持下钻分析。运用色彩编码区分业务线，图表类型与数据类型精准匹配。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>规划与架构</h3>
+            <p>信息架构分为三层：全局概览 → 业务线详情 → 指标明细。每层支持向下钻取，同时保持上下文感知，让用户随时知道自己在哪里、在看什么。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：从决策场景出发而非从数据出发，确保了展示的信息是真正有用的。色彩编码系统让多业务线对比变得直观。</p>
+            <p>如果重来：会更重视数据实时性的技术约束，有些设计在技术实现上成本过高，最终做了妥协。</p>
+          </div>
+        `
+      },
+      'hr-system': {
+        number: '04',
+        title: 'HR 人力资源系统',
+        desc: '覆盖招聘、入职、绩效、薪酬全模块的内部管理系统，服务 2000+ 员工。',
+        category: 'B端 · 公司',
+        year: '2023',
+        role: '产品设计',
+        tools: 'Figma, Axure',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>公司 HR 团队使用多套独立系统处理不同模块的工作，数据不互通，操作效率低。员工体验也受到影响，需要在多个系统中切换完成不同的 HR 相关操作。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>HR 系统涉及大量表单和审批流程，核心挑战是如何在保证数据完整性的同时减少操作负担。我们选择了"渐进式表单"的策略——复杂流程分步完成，每步只关注当前需要的信息。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>规划与架构</h3>
+            <p>统一表单设计规范，引入智能填充和校验。建立审批流可视化组件，让流程状态一目了然。为不同角色（HR、员工、管理者）提供定制化的视图和功能。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：渐进式表单的设计大幅降低了用户的认知负担。审批流可视化是用户反馈最好的功能之一。</p>
+            <p>如果重来：会更早考虑移动端场景，很多 HR 操作实际上发生在手机上，但初期设计主要考虑了桌面端。</p>
+          </div>
+        `
+      },
+      'health-app': {
+        number: '05',
+        title: '健康管理 App',
+        desc: '个人健康数据可视化管理应用，整合运动、睡眠、饮食多维度数据。',
+        category: 'C端 · 公司',
+        year: '2024',
+        role: '产品设计 & 用户研究',
+        tools: 'Figma, Protopie',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>用户对健康管理的需求日益增长，但现有应用数据展示碎片化，缺乏系统性的健康洞察。用户知道数据是什么，但不知道这意味着什么、该怎么做。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>核心洞察：用户需要的不是更多数据，而是更好的理解。我们设计了"健康分数"体系，将复杂的多维度数据简化为直观的评分，让用户一眼就能了解自己的整体状况。</p>
+            <p>引入个性化建议引擎，基于用户数据提供定制化的改善方案。通过成就系统提升用户粘性，但不是简单的游戏化，而是基于行为科学的正向激励。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：健康分数的设计让用户快速理解复杂数据，是产品的核心价值点。个性化建议比通用建议的点击率高出很多。</p>
+            <p>如果重来：会更重视数据隐私的透明度和用户控制感，这是健康类产品的信任基础。</p>
+          </div>
+        `
+      },
+      'e-commerce': {
+        number: '06',
+        title: '电商平台 redesign',
+        desc: '对电商平台进行全面 redesign，优化转化漏斗和用户体验。',
+        category: 'C端 · 公司',
+        year: '2023',
+        role: '设计负责人',
+        tools: 'Figma, Hotjar',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>电商平台使用 3 年前的设计，视觉陈旧，转化漏斗存在明显流失点。用户反馈购物体验不够流畅，特别是在移动端。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>改版需要在不破坏用户习惯的前提下提升体验，核心挑战是平衡"新鲜感"和"熟悉感"。我们选择了渐进式 redesign 的策略——保持核心交互模式不变，在视觉层和微交互层进行升级。</p>
+            <p>通过用户行为数据分析定位关键流失点，针对性优化。每个改动都通过 A/B 测试验证，确保改版方向正确。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：渐进式策略降低了风险，A/B 测试确保了每个改动的有效性。移动端优先的设计思路让整体体验有了质的提升。</p>
+            <p>如果重来：会更早引入用户测试，有些设计决策基于假设而非真实用户反馈，导致后期调整。</p>
+          </div>
+        `
+      },
+      'social-mini': {
+        number: '07',
+        title: '社交小程序',
+        desc: '基于兴趣的轻社交小程序，探索年轻用户的社交需求。',
+        category: 'C端 · 公司',
+        year: '2023',
+        role: '产品设计',
+        tools: 'Figma, 微信开发者工具',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>探索年轻用户的轻社交需求，打造基于兴趣匹配的社交体验。小程序场景下需要快速建立社交连接，同时保持轻量体验。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>核心策略是降低社交门槛——设计"兴趣卡片"匹配机制，让用户通过兴趣而非个人信息建立连接。采用极简交互，3 步完成匹配和聊天。运用动效增强社交趣味性和情感表达。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：兴趣卡片的匹配机制有效降低了社交压力，用户反馈比传统基于照片的匹配更有安全感。极简交互让首次使用门槛极低。</p>
+            <p>如果重来：会更重视冷启动策略，社交产品的核心挑战是如何让新用户快速获得有价值的连接。</p>
+          </div>
+        `
+      },
+      'design-system': {
+        number: '08',
+        title: '设计系统文档',
+        desc: '构建跨团队统一的设计语言系统，覆盖 3 条产品线。',
+        category: '文档',
+        year: '2024',
+        role: '设计系统负责人',
+        tools: 'Figma, Storybook, Notion',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>多条产品线各自为战，设计不一致，开发重复造轮子，效率低下。缺乏统一的设计语言和组件库，每个团队都在重新发明轮子。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>核心挑战：如何让设计系统既规范统一，又保持足够的灵活性适应不同业务场景？我们选择了"核心-扩展"双层组件架构——核心组件严格规范，扩展组件允许定制。</p>
+            <p>配套完整的设计原则、使用指南和代码实现。定期组织设计评审确保落地。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>规划与架构</h3>
+            <p>设计系统分为四个层级：设计原则 → 基础元素（颜色、字体、间距） → 组件库 → 模式库。每个层级都有清晰的文档和使用指南。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：核心-扩展架构平衡了规范性和灵活性。定期设计评审机制确保了设计系统的持续演进和落地。</p>
+            <p>如果重来：会更早建立设计系统的治理机制，明确谁有权力修改核心组件，避免后期出现规范冲突。</p>
+          </div>
+        `
+      },
+      'ux-guidelines': {
+        number: '09',
+        title: 'UX 规范指南',
+        desc: '制定公司级 UX 设计规范，统一设计流程和交付标准。',
+        category: '文档',
+        year: '2023',
+        role: '规范制定',
+        tools: 'Notion, Figma',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>背景</h3>
+            <p>设计团队缺乏统一的工作流程和交付标准，协作效率低，质量参差不齐。新成员入职成本高，设计评审缺乏统一依据。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>策略思考</h3>
+            <p>规范太细会束缚创造力，太粗又起不到指导作用。我们聚焦"原则"而非"规则"，提供设计决策框架而非硬性规定。通过大量正反案例说明，让规范易于理解和执行。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>做对了：原则导向的规范比规则导向更容易被团队接受。正反案例的对比让抽象的原则变得具体可操作。</p>
+            <p>如果重来：会更重视规范的持续维护机制，规范不是一次性文档，需要随着业务发展不断迭代。</p>
+          </div>
+        `
+      },
+      'ai-interface': {
+        number: '10',
+        title: 'AI 界面探索',
+        desc: '探索大模型时代下的新型人机交互范式，重新思考对话式界面的可能性。',
+        category: '探索',
+        year: '2024',
+        role: '概念设计',
+        tools: 'Figma, Midjourney, Protopie',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>设计思考</h3>
+            <p>当 AI 成为交互的核心，界面应该是什么样子？传统的 GUI 是否仍然适用？这是我在 AI 时代持续思考的问题。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>探索方向</h3>
+            <p>探索"意图驱动"的界面——用户表达需求，界面动态生成。研究多模态交互中文字、语音、视觉的协同关系。思考 AI 不确定性带来的界面挑战。</p>
+            <p>核心洞察：AI 界面不是"聊天框+回复"，而应该是"理解意图 → 动态构建 → 持续对话"的循环。界面需要展现 AI 的思考过程，建立用户信任。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>这是一个持续探索的方向。最大的挑战不是技术，而是如何定义人与 AI 之间的协作关系。设计需要回答：什么时候该 AI 主导？什么时候该人主导？如何平滑地切换？</p>
+          </div>
+        `
+      },
+      'spatial-computing': {
+        number: '11',
+        title: '空间计算交互',
+        desc: '基于 Vision Pro 的空间交互设计探索，重新定义三维界面中的信息组织方式。',
+        category: '探索',
+        year: '2024',
+        role: '交互探索',
+        tools: 'Figma, Reality Composer',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>设计思考</h3>
+            <p>空间计算打破了屏幕边界，信息可以存在于物理空间的任何位置。这种自由带来了新的设计挑战——如何在无限的空间中建立清晰的信息层级？</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>探索方向</h3>
+            <p>研究深度、距离、大小在三维界面中的感知规律。探索手势、眼动、语音的多模态交互组合。思考空间界面中的信息层级和注意力引导。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>空间计算的设计范式还在早期阶段。最大的收获是意识到：三维界面不是二维界面的简单延伸，而是一种全新的交互语言。需要重新思考一切——从布局到导航，从输入到反馈。</p>
+          </div>
+        `
+      },
+      'motion-study': {
+        number: '12',
+        title: '动效语言研究',
+        desc: '建立产品动效设计语言，用运动传递信息层级和空间关系。',
+        category: '探索',
+        year: '2023',
+        role: '动效设计',
+        tools: 'After Effects, Principle, Lottie',
+        content: `
+          <div class="work-detail-content-section">
+            <h3>设计思考</h3>
+            <p>动效不只是装饰，它是界面语言的重要组成部分。好的动效能让界面"说话"——传递信息层级、空间关系和状态变化。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>研究内容</h3>
+            <p>定义产品的运动性格——速度曲线、缓动函数、持续时间。建立常见交互场景的动效模式库。研究动效对用户体验和性能感知的影响。</p>
+          </div>
+          <div class="work-detail-content-section">
+            <h3>反思</h3>
+            <p>动效设计最重要的是克制。每一个动效都应该有明确的目的——要么是引导注意力，要么是解释空间关系，要么是提供反馈。没有目的的动效就是噪音。</p>
+          </div>
+        `
+      }
+    };
+
+    const menuTrigger = document.getElementById('menuTrigger');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const pageTransition = document.getElementById('pageTransition');
+    const mainNav = document.getElementById('mainNav');
+
+    let isTransitioning = false;
+
+    function navigateTo(pageId, workId = null) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      if (menuOverlay.classList.contains('open')) {
+        closeMenu();
+      }
+
+      const tl = gsap.timeline({
+        onComplete: () => { isTransitioning = false; }
+      });
+
+      tl.to(pageTransition, {
+        scaleY: 1,
+        transformOrigin: 'bottom',
+        duration: 0.4,
+        ease: 'power4.inOut'
+      })
+      .call(() => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(`page-${pageId}`).classList.add('active');
+        window.scrollTo(0, 0);
+
+        if (pageId === 'work-detail' && workId) {
+          populateWorkDetail(workId);
+        }
+
+        document.querySelectorAll('.reveal').forEach(el => {
+          observer.observe(el);
+        });
+      })
+      .to(pageTransition, {
+        scaleY: 0,
+        transformOrigin: 'top',
+        duration: 0.4,
+        ease: 'power4.inOut'
+      });
+    }
+
+    function populateWorkDetail(workId) {
+      const work = works[workId];
+      if (!work) return;
+
+      document.getElementById('workDetailNumber').textContent = work.number;
+      document.getElementById('workDetailTitle').textContent = work.title;
+      document.getElementById('workDetailDesc').textContent = work.desc;
+      document.getElementById('workDetailCategory').textContent = work.category;
+      document.getElementById('workDetailYear').textContent = work.year;
+      document.getElementById('workDetailRole').textContent = work.role;
+      document.getElementById('workDetailTools').textContent = work.tools;
+      document.getElementById('workDetailContent').innerHTML = work.content;
+
+      const workIds = Object.keys(works);
+      const currentIndex = workIds.indexOf(workId);
+      const prevLink = document.getElementById('workPrev');
+      const nextLink = document.getElementById('workNext');
+
+      if (currentIndex > 0) {
+        prevLink.style.display = 'flex';
+        prevLink.textContent = `← ${works[workIds[currentIndex - 1]].title}`;
+        prevLink.onclick = (e) => {
+          e.preventDefault();
+          navigateTo('work-detail', workIds[currentIndex - 1]);
+        };
+      } else {
+        prevLink.style.display = 'none';
+      }
+
+      if (currentIndex < workIds.length - 1) {
+        nextLink.style.display = 'flex';
+        nextLink.textContent = `${works[workIds[currentIndex + 1]].title} →`;
+        nextLink.onclick = (e) => {
+          e.preventDefault();
+          navigateTo('work-detail', workIds[currentIndex + 1]);
+        };
+      } else {
+        nextLink.style.display = 'none';
+      }
+
+      gsap.fromTo('.work-detail-header > div, .work-detail-meta', {
+        opacity: 0,
+        y: 20
+      }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: 'power3.out',
+        delay: 0.1
+      });
+
+      gsap.fromTo('.work-detail-content-section', {
+        opacity: 0,
+        y: 16
+      }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        stagger: 0.06,
+        ease: 'power3.out',
+        delay: 0.3
+      });
+    }
+
+    let menuOpen = false;
+
+    function openMenu() {
+      menuOpen = true;
+      menuOverlay.classList.add('open');
+      menuTrigger.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      gsap.fromTo('.menu-category', {
+        opacity: 0,
+        y: 20
+      }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: 'power3.out',
+        delay: 0.3
+      });
+    }
+
+    function closeMenu() {
+      menuOpen = false;
+      menuOverlay.classList.remove('open');
+      menuTrigger.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    menuTrigger.addEventListener('click', () => {
+      menuOpen ? closeMenu() : openMenu();
+    });
+
+    document.querySelectorAll('.menu-category-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const category = header.parentElement;
+        const isExpanded = category.classList.contains('expanded');
+
+        document.querySelectorAll('.menu-category').forEach(c => c.classList.remove('expanded'));
+
+        if (!isExpanded) {
+          category.classList.add('expanded');
+
+          gsap.fromTo(category.querySelectorAll('.menu-category-item'), {
+            opacity: 0,
+            x: -10
+          }, {
+            opacity: 1,
+            x: 0,
+            duration: 0.3,
+            stagger: 0.05,
+            ease: 'power2.out'
+          });
+        }
+      });
+    });
+
+    menuOverlay.addEventListener('click', (e) => {
+      const item = e.target.closest('.menu-category-item');
+      if (item) {
+        e.preventDefault();
+        const workId = item.dataset.work;
+        navigateTo('work-detail', workId);
+      }
+    });
+
+    document.querySelector('.nav-links').addEventListener('click', (e) => {
+      const link = e.target.closest('.nav-link');
+      if (link) {
+        const page = link.dataset.page;
+        if (page) navigateTo(page);
+      }
+    });
+
+    document.querySelector('.nav-logo').addEventListener('click', (e) => {
+      e.preventDefault();
+      navigateTo('home');
+    });
+
+    document.querySelector('.work-grid').addEventListener('click', (e) => {
+      const card = e.target.closest('.work-card');
+      if (card) {
+        const workId = card.dataset.work;
+        navigateTo('work-detail', workId);
+      }
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.05,
+      rootMargin: '0px 0px 0px 0px'
+    });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.to('.hero-title', {
+      y: -40,
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1
+      }
+    });
+
+    gsap.utils.toArray('.work-card').forEach((card, i) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        },
+        y: 30,
+        opacity: 0,
+        duration: 0.6,
+        delay: (i % 2) * 0.1,
+        ease: 'power3.out'
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        mainNav.classList.add('scrolled');
+      } else {
+        mainNav.classList.remove('scrolled');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuOpen) {
+        closeMenu();
+      }
+    });
+
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('visible');
+        }
+      });
+
+      // ═══════════════════════════════════════════
+      // Ambient wind audio
+      // ═══════════════════════════════════════════
+      const audio1 = document.getElementById('wind-audio-1');
+      const audio2 = document.getElementById('wind-audio-2');
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'audio-toggle';
+      toggleBtn.setAttribute('aria-label', 'Toggle ambient sound');
+      toggleBtn.innerHTML = `
+        <svg class="icon-mute" viewBox="0 0 24 24">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+        <svg class="icon-sound" viewBox="0 0 24 24">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        </svg>
+      `;
+      document.body.appendChild(toggleBtn);
+
+      // Mode label
+      const modeLabel = document.createElement('div');
+      modeLabel.className = 'audio-mode-label';
+      modeLabel.textContent = '晨风';
+      document.body.appendChild(modeLabel);
+
+      let audioActive = false;
+      let currentAudio = 1;
+
+      toggleBtn.addEventListener('click', () => {
+        if (!audioActive) {
+          audio1.volume = 0.2;
+          audio2.volume = 0.1;
+          if (currentAudio === 1) {
+            audio1.play().catch(() => {});
+          } else {
+            audio2.play().catch(() => {});
+          }
+          audioActive = true;
+          toggleBtn.classList.add('active');
+          modeLabel.classList.add('visible');
+        } else {
+          // Switch between audio 1 and 2
+          if (currentAudio === 1) {
+            audio1.pause();
+            audio1.currentTime = 0;
+            audio2.volume = 0.1;
+            audio2.play().catch(() => {});
+            currentAudio = 2;
+            modeLabel.textContent = '余烬';
+          } else {
+            audio2.pause();
+            audio2.currentTime = 0;
+            audio1.volume = 0.2;
+            audio1.play().catch(() => {});
+            currentAudio = 1;
+            modeLabel.textContent = '晨风';
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
