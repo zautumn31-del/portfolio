@@ -1374,11 +1374,8 @@
   </video>
 
   <!-- Ambient wind audio -->
-  <audio id="wind-audio-1" loop preload="auto">
+  <audio id="wind-audio" loop preload="auto">
     <source src="morning.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="wind-audio-2" loop preload="auto">
-    <source src="burning-air.mp3" type="audio/mpeg">
   </audio>
 
   <!-- Page transition overlay -->
@@ -2539,8 +2536,7 @@
       // ═══════════════════════════════════════════
       // Ambient wind audio
       // ═══════════════════════════════════════════
-      const audio1 = document.getElementById('wind-audio-1');
-      const audio2 = document.getElementById('wind-audio-2');
+      const audio = document.getElementById('wind-audio');
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'audio-toggle';
       toggleBtn.setAttribute('aria-label', 'Toggle ambient sound');
@@ -2558,47 +2554,20 @@
       `;
       document.body.appendChild(toggleBtn);
 
-      // Mode label
-      const modeLabel = document.createElement('div');
-      modeLabel.className = 'audio-mode-label';
-      modeLabel.textContent = '晨风';
-      document.body.appendChild(modeLabel);
-
       let audioActive = false;
-      let currentAudio = 1;
       const isMobile = window.innerWidth <= 768;
       const defaultVolume = isMobile ? 0.1 : 0.2;
-      const audio2Volume = isMobile ? 0.05 : 0.1;
 
       toggleBtn.addEventListener('click', () => {
         if (!audioActive) {
-          audio1.volume = defaultVolume;
-          audio2.volume = audio2Volume;
-          if (currentAudio === 1) {
-            audio1.play().catch(() => {});
-          } else {
-            audio2.play().catch(() => {});
-          }
+          audio.volume = defaultVolume;
+          audio.play().catch(() => {});
           audioActive = true;
           toggleBtn.classList.add('active');
-          modeLabel.classList.add('visible');
         } else {
-          // Switch between audio 1 and 2
-          if (currentAudio === 1) {
-            audio1.pause();
-            audio1.currentTime = 0;
-            audio2.volume = audio2Volume;
-            audio2.play().catch(() => {});
-            currentAudio = 2;
-            modeLabel.textContent = '余烬';
-          } else {
-            audio2.pause();
-            audio2.currentTime = 0;
-            audio1.volume = defaultVolume;
-            audio1.play().catch(() => {});
-            currentAudio = 1;
-            modeLabel.textContent = '晨风';
-          }
+          audio.pause();
+          audioActive = false;
+          toggleBtn.classList.remove('active');
         }
       });
     });
