@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>林默 — 产品策略师</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.loli.net">
+  <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+  <link href="https://fonts.loli.net/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
@@ -382,7 +382,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0 48px;
+      padding: 80px 48px 0;
       position: relative;
     }
 
@@ -421,8 +421,6 @@
 
     .hero-methodology {
       margin-top: 72px;
-      padding-top: 40px;
-      border-top: 1px solid var(--border);
     }
 
     .hero-methodology-label {
@@ -435,21 +433,14 @@
     }
 
     .hero-methodology-steps {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 0;
       align-items: stretch;
     }
 
     .methodology-step {
-      flex: 1;
-      padding: 24px 24px 24px 0;
-      border-left: 1px solid var(--border);
-      position: relative;
-    }
-
-    .methodology-step:first-child {
-      border-left: none;
-      padding-left: 0;
+      padding: 24px 0;
     }
 
     .methodology-step-number {
@@ -991,7 +982,7 @@
     }
 
     .about-portrait-image {
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 1 / 1;
       background: var(--surface);
       overflow: hidden;
       display: flex;
@@ -1193,25 +1184,6 @@
         position: static;
         max-width: 360px;
       }
-
-      .methodology-steps-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .hero-methodology-steps {
-        flex-wrap: wrap;
-      }
-
-      .methodology-step {
-        flex: 1 1 calc(50% - 1px);
-        border-left: none;
-        border-top: 1px solid var(--border);
-        padding: 24px 0;
-      }
-
-      .methodology-step:first-child {
-        border-top: none;
-      }
     }
 
     @media (max-width: 768px) {
@@ -1272,8 +1244,16 @@
         padding: 0 24px 80px;
       }
 
-      .methodology-steps-grid {
-        grid-template-columns: 1fr;
+      .methodology-step-card {
+        padding: 20px 12px;
+      }
+
+      .methodology-step-card-title {
+        font-size: 14px;
+      }
+
+      .methodology-step-card-items li {
+        font-size: 11px;
       }
 
       .quote-block {
@@ -1310,12 +1290,14 @@
       font-family: var(--font-mono);
       font-size: 11px;
       letter-spacing: 0.1em;
-      padding: 4px 8px;
+      padding: 6px 10px;
       border: 1px solid var(--border);
       border-radius: 2px;
       transition: all 0.3s;
-      min-width: 36px;
-      text-align: center;
+      min-width: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .nav-lang-toggle:hover {
@@ -1339,9 +1321,11 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 1000;
+      z-index: 10000;
       transition: all 0.3s var(--ease-out-expo);
       color: var(--text-muted);
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .audio-toggle:hover {
@@ -1362,35 +1346,13 @@
       stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+      pointer-events: none;
     }
 
     .audio-toggle .icon-mute { display: block; }
     .audio-toggle .icon-sound { display: none; }
     .audio-toggle.active .icon-mute { display: none; }
     .audio-toggle.active .icon-sound { display: block; }
-
-    /* Audio mode selector */
-    .audio-mode-label {
-      position: fixed;
-      bottom: 72px;
-      right: 24px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      z-index: 1000;
-      opacity: 0;
-      transform: translateY(4px);
-      transition: all 0.3s var(--ease-out-expo);
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    .audio-mode-label.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
   </style>
 </head>
 <body>
@@ -1399,12 +1361,23 @@
   </video>
 
   <!-- Ambient wind audio -->
-  <audio id="wind-audio-1" loop preload="auto">
+  <audio id="wind-audio" loop preload="auto">
     <source src="morning.mp3" type="audio/mpeg">
   </audio>
-  <audio id="wind-audio-2" loop preload="auto">
-    <source src="burning-air.mp3" type="audio/mpeg">
-  </audio>
+
+  <!-- Audio toggle button -->
+  <button class="audio-toggle" id="audioToggle" aria-label="Toggle ambient sound">
+    <svg class="icon-mute" viewBox="0 0 24 24">
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+      <line x1="23" y1="9" x2="17" y2="15"/>
+      <line x1="17" y1="9" x2="23" y2="15"/>
+    </svg>
+    <svg class="icon-sound" viewBox="0 0 24 24">
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    </svg>
+  </button>
 
   <!-- Page transition overlay -->
   <div class="page-transition" id="pageTransition"></div>
@@ -1911,7 +1884,7 @@
       <div class="about-grid">
         <div class="about-portrait reveal">
           <div class="about-portrait-image">
-            <span class="about-portrait-placeholder">肖像</span>
+            <img src="homeimage.png" alt="林默肖像" style="width: 100%; height: 100%; object-fit: cover;">
           </div>
           <p class="about-portrait-caption">林默 · 2024</p>
         </div>
@@ -2554,77 +2527,33 @@
       }
     });
 
+    // ═══════════════════════════════════════════
+    // Ambient wind audio
+    // ═══════════════════════════════════════════
+    const audio = document.getElementById('wind-audio');
+    const toggleBtn = document.getElementById('audioToggle');
+    let audioActive = false;
+    const isMobile = window.innerWidth <= 768;
+    const defaultVolume = isMobile ? 0.2 : 0.4;
+
+    toggleBtn.addEventListener('click', () => {
+      if (!audioActive) {
+        audio.volume = defaultVolume;
+        audio.play().catch(() => {});
+        audioActive = true;
+        toggleBtn.classList.add('active');
+      } else {
+        audio.pause();
+        audioActive = false;
+        toggleBtn.classList.remove('active');
+      }
+    });
+
     window.addEventListener('load', () => {
       document.querySelectorAll('.reveal').forEach(el => {
         const rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight && rect.bottom > 0) {
           el.classList.add('visible');
-        }
-      });
-
-      // ═══════════════════════════════════════════
-      // Ambient wind audio
-      // ═══════════════════════════════════════════
-      const audio1 = document.getElementById('wind-audio-1');
-      const audio2 = document.getElementById('wind-audio-2');
-      const toggleBtn = document.createElement('button');
-      toggleBtn.className = 'audio-toggle';
-      toggleBtn.setAttribute('aria-label', 'Toggle ambient sound');
-      toggleBtn.innerHTML = `
-        <svg class="icon-mute" viewBox="0 0 24 24">
-          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-          <line x1="23" y1="9" x2="17" y2="15"/>
-          <line x1="17" y1="9" x2="23" y2="15"/>
-        </svg>
-        <svg class="icon-sound" viewBox="0 0 24 24">
-          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-        </svg>
-      `;
-      document.body.appendChild(toggleBtn);
-
-      // Mode label
-      const modeLabel = document.createElement('div');
-      modeLabel.className = 'audio-mode-label';
-      modeLabel.textContent = '晨风';
-      document.body.appendChild(modeLabel);
-
-      let audioActive = false;
-      let currentAudio = 1;
-      const isMobile = window.innerWidth <= 768;
-      const defaultVolume = isMobile ? 0.1 : 0.2;
-      const audio2Volume = isMobile ? 0.05 : 0.1;
-
-      toggleBtn.addEventListener('click', () => {
-        if (!audioActive) {
-          audio1.volume = defaultVolume;
-          audio2.volume = audio2Volume;
-          if (currentAudio === 1) {
-            audio1.play().catch(() => {});
-          } else {
-            audio2.play().catch(() => {});
-          }
-          audioActive = true;
-          toggleBtn.classList.add('active');
-          modeLabel.classList.add('visible');
-        } else {
-          // Switch between audio 1 and 2
-          if (currentAudio === 1) {
-            audio1.pause();
-            audio1.currentTime = 0;
-            audio2.volume = audio2Volume;
-            audio2.play().catch(() => {});
-            currentAudio = 2;
-            modeLabel.textContent = '余烬';
-          } else {
-            audio2.pause();
-            audio2.currentTime = 0;
-            audio1.volume = defaultVolume;
-            audio1.play().catch(() => {});
-            currentAudio = 1;
-            modeLabel.textContent = '晨风';
-          }
         }
       });
 
@@ -2679,7 +2608,7 @@
           work2_strategy: 'Unified state model, role-customized workbenches, full-chain visualization',
           work3_title: 'Health Management App',
           work3_problem: 'Fragmented health data, users lack systematic insights and motivation for continued use',
-          work3_strategy: 'Health score system to simplify认知, personalized recommendations to drive retention',
+          work3_strategy: 'Health score system to simplify cognition, personalized recommendations to drive retention',
           work4_title: 'Design System Documentation',
           work4_problem: 'Inconsistent design across product lines, developers reinventing the wheel, low collaboration efficiency',
           work4_strategy: 'Core-extension dual-layer architecture, complete principles and guidelines, regular reviews',
@@ -2792,54 +2721,7 @@
         catNames[3].innerHTML = t.cat_explore + chevronHTML;
       }
     });
-
-      function applyTranslations() {
-        if (currentLang === 'zh') {
-          // Reset to original Chinese — reload page for simplicity
-          location.reload();
-          return;
-        }
-
-        const t = translations.en;
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-          const key = el.getAttribute('data-i18n');
-          if (t[key]) {
-            if (el.tagName === 'H1' || el.tagName === 'P') {
-              el.innerHTML = t[key];
-            } else {
-              el.textContent = t[key];
-            }
-          }
-        });
-
-        // Update nav links
-        document.querySelector('[data-page="methodology"]').textContent = t.nav_methodology;
-        document.querySelector('[data-page="about"]').textContent = t.nav_about;
-
-        // Update menu
-        document.querySelector('.menu-title').innerHTML = t.menu_title;
-        document.querySelector('.menu-subtitle').textContent = t.menu_subtitle;
-
-        // Update category names
-        const catNames = document.querySelectorAll('.menu-category-name');
-        catNames[0].innerHTML = t.cat_b_company + ' <span class="menu-category-chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"></polyline></svg></span>';
-        catNames[1].innerHTML = t.cat_c_company + ' <span class="menu-category-chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"></polyline></svg></span>';
-        catNames[2].innerHTML = t.cat_docs + ' <span class="menu-category-chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"></polyline></svg></span>';
-        catNames[3].innerHTML = t.cat_explore + ' <span class="menu-category-chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"></polyline></svg></span>';
-
-        // Update section titles
-        document.querySelector('.section-title').textContent = t.section_title_works;
-
-        // Update quote
-        const quoteText = document.querySelector('.quote-text');
-        const quoteAttr = document.querySelector('.quote-attr');
-        if (quoteText) quoteText.textContent = t.quote_text;
-        if (quoteAttr) quoteAttr.textContent = t.quote_attr;
-
-        // Update footer
-        document.querySelectorAll('.footer-copy').forEach(el => el.textContent = t.footer_copy);
-      }
-    });
   </script>
+
 </body>
 </html>
